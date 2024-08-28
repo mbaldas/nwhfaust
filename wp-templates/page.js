@@ -18,13 +18,14 @@ export default function Component(props) {
   if (props.loading) {
     return <>Loading...</>;
   }
+  const testingLabel = props?.data?.page?.translation?.test?.testingLabel;
 
   const { title: siteTitle, description: siteDescription } =
     props?.data?.generalSettings;
   const primaryMenu = props?.data?.headerMenuItems?.nodes ?? [];
   const footerMenu = props?.data?.footerMenuItems?.nodes ?? [];
   const { title, content, featuredImage } = props?.data?.page ?? { title: '' };
-
+  console.log(props);
   return (
     <>
       <SEO
@@ -41,6 +42,7 @@ export default function Component(props) {
         <>
           <EntryHeader title={title} image={featuredImage?.node} />
           <Container>
+            <h1>{testingLabel}</h1>
             <ContentWrapper content={content} />
           </Container>
         </>
@@ -51,6 +53,7 @@ export default function Component(props) {
 }
 
 Component.variables = ({ databaseId }, ctx) => {
+  console.log('asPreview', ctx?.asPreview);
   return {
     databaseId,
     headerLocation: MENUS.PRIMARY_LOCATION,
@@ -72,6 +75,11 @@ Component.query = gql`
     page(id: $databaseId, idType: DATABASE_ID, asPreview: $asPreview) {
       title
       content
+      translation(language: EN) {
+        test {
+          testingLabel
+        }
+      }
       ...FeaturedImageFragment
     }
     generalSettings {
